@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 @RestController
@@ -43,6 +44,7 @@ public class PromotionalCodeController {
     }
 
     private ResponseEntity<?> handleCodeRedemption(User user, PromotionalCode code) {
+        HashMap<String, Object> data = new HashMap<>();
         if (code.getUser() != null) {
             if (!code.getUser().getEmail().equals(user.getEmail())) {
                 ApiError error = new ApiError("El código promocional ya ha sido canjeado por otro usuario", HttpStatus.FORBIDDEN.value());
@@ -50,13 +52,17 @@ public class PromotionalCodeController {
             } else {
                 code.setCounter(code.getCounter() + 1);
                 promotionalCodeRepository.save(code);
-                return ResponseEntity.ok(code);
+                data.put("data", code);
+                data.put("message", "Se consulto con éxito");
+                return ResponseEntity.ok(data);
             }
         }
         code.setUser(user);
         code.setCounter(0);
         promotionalCodeRepository.save(code);
-        return ResponseEntity.ok(code);
+        data.put("data", code);
+        data.put("message", "Se guardó con exitó");
+        return ResponseEntity.ok(data);
     }
 
     @PostMapping(value = "register")
