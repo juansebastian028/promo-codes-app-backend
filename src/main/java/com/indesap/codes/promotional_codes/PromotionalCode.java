@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "PROMOTIONAL_CODE")
+@Table(name = "PROMOTIONAL_CODE", uniqueConstraints = { @UniqueConstraint(columnNames = {"code"}) })
 @Data
 @Builder
 @AllArgsConstructor
